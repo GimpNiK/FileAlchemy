@@ -2,6 +2,8 @@
 
 **FileAlchemy v. 1.1.1** is a powerful and intuitive Python library for working with files, directories, and text data. It provides a user-friendly interface for performing file system operations, text processing, and encoding management, inspired by the Unix and Cmd command line syntax. Most of the command names duplicate the functionality of these two command shells. It is supposed to be used instead of bat and sh files, and used interactively in the Python Shell.
 
+**Keywords**: Python file management, cross-platform file handling, text encoding detection, Unix-like file commands in Python 
+
 ## Main features
 
 1. **File and directory management**:
