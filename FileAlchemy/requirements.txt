@@ -1,0 +1,4 @@
+chardet
+py7zr
+pyzipper
+rarfile
