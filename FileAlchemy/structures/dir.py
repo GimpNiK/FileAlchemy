@@ -7,7 +7,7 @@ from pathlib import Path
 class Dir:
     def __init__(self, path: "Dir|Path|str"):
         if isinstance(path,Dir):
-            self = path
+            self.path = path.path
         else:
             self.path = Path(path)
             if self.path.suffix !="":
