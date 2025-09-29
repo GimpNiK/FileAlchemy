@@ -16,7 +16,10 @@ class Dir:
     def create(self, mode: int = 0o777, parents: bool = False, ignore_errors: bool = False):
         """Создаёт директорию по указанному пути."""
         self.path.mkdir(mode=mode, parents=parents, exist_ok = ignore_errors)
-
+    def add(self, path: "Dir|Path|str"):
+        """Добавляет файл или директорию в директорию"""
+        shutil.copy(str(path), str(self.path))
+        return self
     def move_to(self,dir : "Dir|Path|str"):
         """Перемещает данную папку в указанную"""
         Dir(dir).create()
@@ -92,7 +95,6 @@ class Dir:
                 raise ImportError("Для изменения скрытости на Windows требуется pywin32")
         else:
             return self.name.startswith('.')
-
     @hidden.setter
     def hidden(self, value: bool):
 
@@ -120,6 +122,7 @@ class Dir:
                 if name.startswith('.'):
                     self.name = name[1:]
     
+
     def len_files_and_dirs(self, recursive: bool = True, symlinks: bool = False) -> Dict[str, int]:
         """Количество элементов в директории"""
         try:
@@ -131,12 +134,10 @@ class Dir:
         except OSError:
             return {'files': 0, 'subdirectories': 0, 'total': 0}
 
-        
     def sizeof(self, recursive: bool =True, symlink: bool = False) -> int:
         """Размер директории в байтах (рекурсивно)"""
         return sum(f.stat().st_size for f in self.path.rglob('*') if f.is_file())
 
-    
     def created_utc(self) -> datetime:
         """Время создания в UTC"""
         if platform.system() == 'Windows':
@@ -144,19 +145,13 @@ class Dir:
         else:
             stat = os.stat(self.path)
             timestamp = getattr(stat, 'st_birthtime', stat.st_mtime)
-        return datetime.fromtimestamp(timestamp, tz=timezone.utc)
-
-    
+        return datetime.fromtimestamp(timestamp, tz=timezone.utc) 
     def modified_utc(self) -> datetime:
         """Время последнего изменения в UTC"""
         return datetime.fromtimestamp(os.path.getmtime(self.path), tz=timezone.utc)
-
-    
     def accessed_utc(self) -> datetime:
         """Время последнего доступа в UTC"""
         return datetime.fromtimestamp(os.path.getatime(self.path), tz=timezone.utc)
-
-    
     def created_lcl(self) -> datetime:
         """Локальное время создания"""
         if platform.system() == 'Windows':
@@ -164,25 +159,17 @@ class Dir:
         else:
             stat = os.stat(self.path)
             timestamp = getattr(stat, 'st_birthtime', stat.st_mtime)
-        return datetime.fromtimestamp(timestamp).astimezone()
-
-    
+        return datetime.fromtimestamp(timestamp).astimezone()   
     def modified_lcl(self) -> datetime:
         """Локальное время последнего изменения"""
-        return datetime.fromtimestamp(os.path.getmtime(self.path)).astimezone()
-
-    
+        return datetime.fromtimestamp(os.path.getmtime(self.path)).astimezone()   
     def accessed_lcl(self) -> datetime:
         """Локальное время последнего доступа"""
-        return datetime.fromtimestamp(os.path.getatime(self.path)).astimezone()
-
+        return datetime.fromtimestamp(os.path.getatime(self.path)).astimezone()  
     
     def is_symlink(self) -> bool:
         """Является ли символьной ссылкой"""
         return self.path.is_symlink()
-
-    
-
     def metadata(self) -> Dict[str, Any]:
         """Метаданные директории"""
         return {
